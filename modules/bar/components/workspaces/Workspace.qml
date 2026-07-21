@@ -18,22 +18,24 @@ ColumnLayout {
 
     readonly property bool isWorkspace: true // Flag for finding workspace children
     // Unanimated prop for others to use as reference
-    readonly property int size: implicitHeight + (hasWindows ? Tokens.padding.extraSmall : 0)
+    readonly property int size: visible ? (implicitHeight + (hasWindows ? Tokens.padding.extraSmall : 0)) : 0
 
     readonly property int ws: groupOffset + index + 1
     readonly property bool isOccupied: occupied[ws] ?? false
     readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
 
+    visible: isOccupied || activeWsId === ws
     Layout.alignment: Qt.AlignHCenter
-    Layout.preferredHeight: size
+    Layout.preferredHeight: visible ? size : 0
 
     spacing: 0
 
     StyledText {
         id: indicator
 
+        visible: root.visible
         Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-        Layout.preferredHeight: Tokens.sizes.bar.innerWidth - Tokens.padding.small
+        Layout.preferredHeight: root.visible ? Tokens.sizes.bar.innerWidth - Tokens.padding.small : 0
 
         animate: true
         text: {
