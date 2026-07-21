@@ -196,6 +196,14 @@ ColumnLayout {
         implicitWidth: item?.implicitWidth ?? 0
         implicitHeight: item?.implicitHeight ?? 0
 
+        StyledRect {
+            visible: entryId === "logo" || entryId === "power" || entryId === "activeWindow"
+            anchors.fill: parent
+            anchors.margins: entryId === "activeWindow" ? -4 : -6
+            radius: Tokens.rounding.full
+            color: Colours.tPalette.m3surfaceContainer
+        }
+
         children: item
     }
 }

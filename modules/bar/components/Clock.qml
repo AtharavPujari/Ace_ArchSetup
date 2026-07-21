@@ -10,13 +10,13 @@ StyledRect {
     id: root
 
     readonly property color colour: Colours.palette.m3tertiary
-    readonly property int padding: Config.bar.clock.background ? Tokens.padding.medium : Tokens.padding.extraSmall
+    readonly property int padding: Tokens.padding.medium
     readonly property var font: Tokens.font.body.builders.small.scale(1.1)
 
     implicitWidth: Tokens.sizes.bar.innerWidth
     implicitHeight: layout.implicitHeight + root.padding * 2
 
-    color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Config.bar.clock.background ? Colours.tPalette.m3surfaceContainer.a : 0)
+    color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
 
     ColumnLayout {
