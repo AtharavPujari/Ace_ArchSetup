@@ -50,7 +50,7 @@ Variants {
         }
 
         implicitWidth: screen.width
-        implicitHeight: barRow.implicitHeight + 16
+        implicitHeight: barRow.implicitHeight + 1
 
         mask: Region {
             Region { item: logoPill }
@@ -70,17 +70,19 @@ Variants {
             }
 
             anchors.left: parent.left
-            anchors.leftMargin: 8
+            anchors.leftMargin: 0
             anchors.right: parent.right
-            anchors.rightMargin: 8
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 0
 
             spacing: Tokens.spacing.medium
 
             // 1. Arch Logo Pill
             StyledRect {
                 id: logoPill
-                implicitWidth: logoIcon.implicitWidth + Tokens.padding.medium * 2
-                implicitHeight: logoIcon.implicitHeight + Tokens.padding.small * 2
+                implicitWidth: logoIcon.implicitWidth + Tokens.padding.medium
+                implicitHeight: logoIcon.implicitHeight + Tokens.padding.small
                 color: Colours.tPalette.m3surfaceContainer
                 radius: Tokens.rounding.full
 
@@ -94,8 +96,8 @@ Variants {
             StyledRect {
                 id: wsPill
 
-                implicitWidth: wsRow.implicitWidth + Tokens.padding.large * 2
-                implicitHeight: wsRow.implicitHeight + Tokens.padding.small * 2
+                implicitWidth: wsRow.implicitWidth + Tokens.padding.large
+                implicitHeight: wsRow.implicitHeight + Tokens.padding.small
                 color: Colours.tPalette.m3surfaceContainer
                 radius: Tokens.rounding.full
 
@@ -211,8 +213,8 @@ Variants {
             // 5. Power Button Pill
             StyledRect {
                 id: powerPill
-                implicitWidth: powerBtn.implicitWidth + Tokens.padding.medium * 2
-                implicitHeight: powerBtn.implicitHeight + Tokens.padding.small * 2
+                implicitWidth: powerBtn.implicitWidth + Tokens.padding.medium
+                implicitHeight: powerBtn.implicitHeight + Tokens.padding.small
                 color: Colours.tPalette.m3surfaceContainer
                 radius: Tokens.rounding.full
 
@@ -229,7 +231,7 @@ Variants {
             id: clockPill
 
             anchors.horizontalCenter: parent.horizontalCenter
-            y: win.fullscreen ? -implicitHeight - 10 : 6
+            y: win.fullscreen ? -implicitHeight - 10 : 0
 
             Behavior on y {
                 Anim {}

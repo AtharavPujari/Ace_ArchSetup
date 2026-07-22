@@ -20,8 +20,8 @@ StyledRect {
     radius: Tokens.rounding.full
 
     clip: true
-    implicitWidth: iconRow.implicitWidth + Tokens.padding.medium * 2
-    implicitHeight: iconRow.implicitHeight + Tokens.padding.small * 2
+    implicitWidth: iconRow.implicitWidth + Tokens.padding.medium
+    implicitHeight: iconRow.implicitHeight + Tokens.padding.small
 
     RowLayout {
         id: iconRow
