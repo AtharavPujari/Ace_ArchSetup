@@ -24,11 +24,12 @@ Item {
         if (content.isDetached)
             return (parent.width - content.nonAnimWidth) / 2;
         if (content.isTop) {
+            const edgeMargin = 8;
             const off = content.currentCenter - content.nonAnimWidth / 2;
-            const diff = parent.width - Math.floor(off + content.nonAnimWidth);
+            const diff = (parent.width - edgeMargin) - Math.floor(off + content.nonAnimWidth);
             if (diff < 0)
                 return off + diff;
-            return Math.max(off, 0);
+            return Math.max(off, edgeMargin);
         }
         return 0;
     }
@@ -37,8 +38,8 @@ Item {
             return (parent.height - content.nonAnimHeight) / 2;
         if (content.isTop) {
             const comps = ShellState.componentsFor(screen);
-            const topBarHeight = comps.topBar ? comps.topBar.height : 48;
-            return topBarHeight - borderThickness;
+            const topBarHeight = comps.topBar ? comps.topBar.implicitHeight : 48;
+            return topBarHeight - borderThickness + 6;
         }
 
         const off = content.currentCenter - borderThickness - content.nonAnimHeight / 2;

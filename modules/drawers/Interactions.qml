@@ -85,14 +85,14 @@ CustomMouseArea {
                 root.panels.osd.hovered = false;
             }
 
-            if (!dashboardShortcutActive)
-                screenState.dashboard = false;
-
-            if (!utilitiesShortcutActive)
-                screenState.utilities = false;
-
             const comps = ShellState.componentsFor(screen);
             const topBarHovered = comps.topBar && comps.topBar.isHovered;
+
+            if (!topBarHovered && !dashboardShortcutActive)
+                screenState.dashboard = false;
+
+            if (!topBarHovered && !utilitiesShortcutActive)
+                screenState.utilities = false;
 
             if (!topBarHovered && (!popouts.currentName.startsWith("traymenu") || ((popouts.current as StackView)?.depth ?? 0) <= 1)) {
                 popouts.hasCurrent = false;

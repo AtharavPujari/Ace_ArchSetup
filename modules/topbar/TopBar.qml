@@ -20,7 +20,7 @@ Variants {
         screen: modelData
         name: "top-bar"
 
-        readonly property ScreenState screenState: ShellState.screenStates[screen.name] ?? null
+        readonly property ScreenState screenState: ShellState.forScreen(screen)
         property bool isHovered: hoverArea.containsMouse
 
         ShellState.ComponentRef {
@@ -149,8 +149,8 @@ Variants {
             StyledRect {
                 id: clockPill
 
-                implicitWidth: clockLayout.implicitWidth + Tokens.padding.large * 2
-                implicitHeight: clockLayout.implicitHeight + Tokens.padding.small * 2
+                implicitWidth: clockLayout.implicitWidth + Tokens.padding.large
+                implicitHeight: clockLayout.implicitHeight + Tokens.padding.small
 
                 color: Colours.tPalette.m3surfaceContainer
                 radius: Tokens.rounding.full
@@ -165,6 +165,19 @@ Variants {
                         text: Time.hourStr + ":" + Time.minuteStr
                         font: Tokens.font.body.builders.medium.build()
                         color: Colours.palette.m3onSurface
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onEntered: {
+                        if (win.screenState)
+                            win.screenState.dashboard = true;
+                    }
+                    onClicked: {
+                        if (win.screenState)
+                            win.screenState.dashboard = !win.screenState.dashboard;
                     }
                 }
             }
@@ -201,7 +214,7 @@ Variants {
                             if (icon && icon.visible && icon.name) {
                                 popouts.isTop = true;
                                 popouts.currentName = icon.name;
-                                const barWidth = comps.bar ? comps.bar.implicitWidth : 0;
+                                const barWidth = comps.bar ? comps.bar.implicitWidth :0;
                                 popouts.currentCenter = icon.mapToItem(null, icon.implicitWidth / 2, 0).x - barWidth;
                                 popouts.hasCurrent = true;
                             } else {
