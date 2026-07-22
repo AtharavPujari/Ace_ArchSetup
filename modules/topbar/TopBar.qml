@@ -37,6 +37,9 @@ Variants {
         }
 
         WlrLayershell.layer: WlrLayer.Overlay
+        readonly property var comps: ShellState.componentsFor(win.screen)
+        readonly property bool fullscreen: comps && comps.rootWindow && comps.rootWindow.hasFullscreen
+
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
         color: "transparent"
 
@@ -50,14 +53,22 @@ Variants {
         implicitHeight: barRow.implicitHeight + 16
 
         mask: Region {
-            item: barRow
+            Region { item: logoPill }
+            Region { item: wsPill }
+            Region { item: clockPill }
+            Region { item: statusPillWrapper }
+            Region { item: powerPill }
         }
 
         RowLayout {
             id: barRow
 
-            anchors.top: parent.top
-            anchors.topMargin: 6
+            y: win.fullscreen ? -implicitHeight - 10 : 6
+
+            Behavior on y {
+                Anim {}
+            }
+
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.right: parent.right
@@ -67,6 +78,7 @@ Variants {
 
             // 1. Arch Logo Pill
             StyledRect {
+                id: logoPill
                 implicitWidth: logoIcon.implicitWidth + Tokens.padding.medium * 2
                 implicitHeight: logoIcon.implicitHeight + Tokens.padding.small * 2
                 color: Colours.tPalette.m3surfaceContainer
@@ -140,55 +152,14 @@ Variants {
                 }
             }
 
-            // Left Spacer to push Time to center
-            Item {
-                Layout.fillWidth: true
-            }
-
-            // 3. Centered Time Pill
-            StyledRect {
-                id: clockPill
-
-                implicitWidth: clockLayout.implicitWidth + Tokens.padding.large
-                implicitHeight: clockLayout.implicitHeight + Tokens.padding.small
-
-                color: Colours.tPalette.m3surfaceContainer
-                radius: Tokens.rounding.full
-
-                RowLayout {
-                    id: clockLayout
-
-                    anchors.centerIn: parent
-                    spacing: Tokens.spacing.small
-
-                    StyledText {
-                        text: Time.hourStr + ":" + Time.minuteStr
-                        font: Tokens.font.body.builders.medium.build()
-                        color: Colours.palette.m3onSurface
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: {
-                        if (win.screenState)
-                            win.screenState.dashboard = true;
-                    }
-                    onClicked: {
-                        if (win.screenState)
-                            win.screenState.dashboard = !win.screenState.dashboard;
-                    }
-                }
-            }
-
-            // Right Spacer to push Status Icons to right
+            // Middle Spacer
             Item {
                 Layout.fillWidth: true
             }
 
             // 4. Status Icons Pill (with hover / click drawer trigger)
             Item {
+                id: statusPillWrapper
                 implicitWidth: statusPill.implicitWidth
                 implicitHeight: statusPill.implicitHeight
 
@@ -239,6 +210,7 @@ Variants {
 
             // 5. Power Button Pill
             StyledRect {
+                id: powerPill
                 implicitWidth: powerBtn.implicitWidth + Tokens.padding.medium * 2
                 implicitHeight: powerBtn.implicitHeight + Tokens.padding.small * 2
                 color: Colours.tPalette.m3surfaceContainer
@@ -248,6 +220,50 @@ Variants {
                     id: powerBtn
                     anchors.centerIn: parent
                     screenState: win.screenState
+                }
+            }
+        }
+
+        // 3. Centered Time Pill
+        StyledRect {
+            id: clockPill
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            y: win.fullscreen ? -implicitHeight - 10 : 6
+
+            Behavior on y {
+                Anim {}
+            }
+
+            implicitWidth: clockLayout.implicitWidth + Tokens.padding.large
+            implicitHeight: clockLayout.implicitHeight + Tokens.padding.small
+
+            color: Colours.tPalette.m3surfaceContainer
+            radius: Tokens.rounding.full
+
+            RowLayout {
+                id: clockLayout
+
+                anchors.centerIn: parent
+                spacing: Tokens.spacing.small
+
+                StyledText {
+                    text: Time.hourStr + ":" + Time.minuteStr
+                    font: Tokens.font.body.builders.medium.build()
+                    color: Colours.palette.m3onSurface
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    if (win.screenState)
+                        win.screenState.dashboard = true;
+                }
+                onClicked: {
+                    if (win.screenState)
+                        win.screenState.dashboard = !win.screenState.dashboard;
                 }
             }
         }
