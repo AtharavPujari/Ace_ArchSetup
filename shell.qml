@@ -9,7 +9,7 @@ import "modules/drawers"
 import "modules/background"
 import "modules/areapicker"
 import "modules/lock"
-import "modules/topclock"
+import "modules/topbar"
 import QtQuick
 import Quickshell
 import qs.services
@@ -29,7 +29,7 @@ ShellRoot {
 
     Background {}
     Drawers {}
-    TopClock {}
+    TopBar {}
     AreaPicker {}
     Lock {
         id: lock

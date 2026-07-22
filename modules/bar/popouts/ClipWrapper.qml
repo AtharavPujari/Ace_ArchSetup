@@ -12,18 +12,34 @@ Item {
     required property real borderThickness
 
     readonly property alias content: content
-    property real offsetScale: x > 0 || content.hasCurrent ? 0 : 1
+    property real offsetScale: content.isDetached || content.hasCurrent ? 0 : 1
 
     visible: width > 0 && height > 0
     clip: true
 
-    implicitWidth: content.implicitWidth * (1 - offsetScale)
-    implicitHeight: content.implicitHeight
+    implicitWidth: content.isTop ? content.implicitWidth : content.implicitWidth * (1 - offsetScale)
+    implicitHeight: content.isTop ? content.implicitHeight * (1 - offsetScale) : content.implicitHeight
 
-    x: content.isDetached ? (parent.width - content.nonAnimWidth) / 2 : 0
+    x: {
+        if (content.isDetached)
+            return (parent.width - content.nonAnimWidth) / 2;
+        if (content.isTop) {
+            const off = content.currentCenter - content.nonAnimWidth / 2;
+            const diff = parent.width - Math.floor(off + content.nonAnimWidth);
+            if (diff < 0)
+                return off + diff;
+            return Math.max(off, 0);
+        }
+        return 0;
+    }
     y: {
         if (content.isDetached)
             return (parent.height - content.nonAnimHeight) / 2;
+        if (content.isTop) {
+            const comps = ShellState.componentsFor(screen);
+            const topBarHeight = comps.topBar ? comps.topBar.height : 48;
+            return topBarHeight - borderThickness;
+        }
 
         const off = content.currentCenter - borderThickness - content.nonAnimHeight / 2;
         const diff = parent.height - Math.floor(off + content.nonAnimHeight);
@@ -58,8 +74,11 @@ Item {
         screen: root.screen
         offsetScale: root.offsetScale
 
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: (-implicitWidth - 5) * root.offsetScale
+        anchors.left: content.isTop ? undefined : parent.left
+        anchors.leftMargin: content.isTop ? 0 : (-implicitWidth - 5) * root.offsetScale
+        anchors.verticalCenter: content.isTop ? undefined : parent.verticalCenter
+
+        anchors.top: content.isTop ? parent.top : undefined
+        anchors.topMargin: content.isTop ? (-implicitHeight - 5) * root.offsetScale : 0
     }
 }

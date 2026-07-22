@@ -28,6 +28,7 @@ Item {
     property alias currentName: popoutState.currentName
     property alias hasCurrent: popoutState.hasCurrent
     property real currentCenter
+    property bool isTop: false
 
     property string detachedMode
     property string queuedMode

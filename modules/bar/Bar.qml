@@ -107,7 +107,7 @@ ColumnLayout {
         id: repeater
 
         model: ScriptModel {
-            values: root.Config.bar.entries.filter(e => (e.enabled ?? true) && e.id !== "clock")
+            values: root.Config.bar.entries.filter(e => (e.enabled ?? true) && e.id !== "clock" && e.id !== "logo" && e.id !== "workspaces" && e.id !== "statusIcons" && e.id !== "power")
         }
 
         DelegateChooser {

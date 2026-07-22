@@ -6,6 +6,7 @@ import qs.components
 import qs.components.controls
 import qs.modules.bar as Bar
 import qs.modules.bar.popouts as BarPopouts
+import qs.services
 
 CustomMouseArea {
     id: root
@@ -35,6 +36,18 @@ CustomMouseArea {
 
     function inLeftPanel(panel: Item, x: real, y: real): bool {
         return x < bar.implicitWidth + panel.x + panel.width && withinPanelHeight(panel, x, y);
+    }
+
+    function inTopPopout(panel: Item, x: real, y: real): bool {
+        if (!popouts.isTop)
+            return false;
+        const panelX = bar.implicitWidth + panel.x;
+        const comps = ShellState.componentsFor(screen);
+        const topBarHeight = comps.topBar ? comps.topBar.height : 48;
+        return x >= panelX - Config.border.rounding &&
+               x <= panelX + panel.width + Config.border.rounding &&
+               y >= 0 &&
+               y <= topBarHeight + panel.height + Config.border.rounding;
     }
 
     function inRightPanel(panel: Item, x: real, y: real): bool {
@@ -78,7 +91,10 @@ CustomMouseArea {
             if (!utilitiesShortcutActive)
                 screenState.utilities = false;
 
-            if (!popouts.currentName.startsWith("traymenu") || ((popouts.current as StackView)?.depth ?? 0) <= 1) {
+            const comps = ShellState.componentsFor(screen);
+            const topBarHovered = comps.topBar && comps.topBar.isHovered;
+
+            if (!topBarHovered && (!popouts.currentName.startsWith("traymenu") || ((popouts.current as StackView)?.depth ?? 0) <= 1)) {
                 popouts.hasCurrent = false;
                 bar.closeTray();
             }
@@ -240,9 +256,13 @@ CustomMouseArea {
         // Show popouts on hover
         if (x < bar.implicitWidth) {
             bar.checkPopout(y);
-        } else if ((!popouts.currentName.startsWith("traymenu") || ((popouts.current as StackView)?.depth ?? 0) <= 1) && !inLeftPanel(panels.popoutsWrapper, x, y)) {
-            popouts.hasCurrent = false;
-            bar.closeTray();
+        } else if ((!popouts.currentName.startsWith("traymenu") || ((popouts.current as StackView)?.depth ?? 0) <= 1) && !inLeftPanel(panels.popoutsWrapper, x, y) && !inTopPopout(panels.popoutsWrapper, x, y)) {
+            const comps = ShellState.componentsFor(screen);
+            const topBarHovered = comps.topBar && comps.topBar.isHovered;
+            if (!topBarHovered) {
+                popouts.hasCurrent = false;
+                bar.closeTray();
+            }
         }
     }
 

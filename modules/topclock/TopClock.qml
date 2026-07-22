@@ -55,7 +55,7 @@ Variants {
 
                 StyledText {
                     text: Time.hourStr + ":" + Time.minuteStr
-                    font: Tokens.font.body.builders.medium.bold(true).build()
+                    font: Tokens.font.body.builders.medium.build()
                     color: Colours.palette.m3onSurface
                 }
             }
