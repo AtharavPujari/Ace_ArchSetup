@@ -148,7 +148,7 @@ Item {
         screenState: root.screenState
 
         anchors.top: notifications.bottom
-        anchors.bottom: utilities.top
+        height: Math.min(parent.height - utilities.height - Tokens.padding.large * 2, sidebar.contentHeight)
         anchors.right: parent.right
         anchors.topMargin: -notifications.anchors.topMargin
     }

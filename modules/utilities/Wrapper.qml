@@ -34,6 +34,8 @@ Item {
     anchors.bottomMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight + totalPadding
     implicitWidth: sidebar.width * (1 - sidebar.offsetScale) * horizontalStretch * sidebarLerp + Tokens.sizes.utilities.width * (1 - sidebarLerp)
+    width: implicitWidth
+    height: implicitHeight
     opacity: 1 - offsetScale
 
     states: State {

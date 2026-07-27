@@ -13,10 +13,14 @@ Item {
 
     readonly property bool shouldBeActive: screenState.sidebar && Config.sidebar.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
+    readonly property real contentHeight: content.item && content.item.neededHeight !== undefined ? content.item.neededHeight : 0
 
     visible: offsetScale < 1
     anchors.rightMargin: (-implicitWidth - 5) * offsetScale
     implicitWidth: Tokens.sizes.sidebar.width
+    implicitHeight: contentHeight
+    width: implicitWidth
+    height: implicitHeight
     opacity: 1 - offsetScale
 
     Behavior on offsetScale {

@@ -200,8 +200,6 @@ StyledWindow {
         PanelBg {
             id: sidebarBg
 
-            opacity: 0
-            visible: false
             panel: panels.sidebar
             deformAmount: 0.03
             implicitHeight: panel.height * (1 / rawDeformMatrix.m22) + 2

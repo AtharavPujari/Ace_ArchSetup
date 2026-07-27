@@ -18,6 +18,7 @@ Item {
     required property Props props
     required property ScreenState screenState
     readonly property int notifCount: Notifs.list.reduce((acc, n) => n.closed ? acc : acc + 1, 0)
+    readonly property real neededHeight: title.implicitHeight + Tokens.spacing.medium + (notifCount > 0 ? notifList.implicitHeight : 240) + Tokens.padding.medium * 2
 
     anchors.fill: parent
     anchors.margins: Tokens.padding.medium

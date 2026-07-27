@@ -42,7 +42,7 @@ Item {
             return (parent.height - content.nonAnimHeight) / 2;
         if (content.isTop) {
             const comps = ShellState.componentsFor(screen);
-            const topBarHeight = comps.topBar ? comps.topBar.implicitHeight : 48;
+            const topBarHeight = comps && comps.topBar ? comps.topBar.implicitHeight : 48;
             return topBarHeight - borderThickness + 6;
         }
 
