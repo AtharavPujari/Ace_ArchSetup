@@ -22,6 +22,52 @@ Variants {
 
         readonly property ScreenState screenState: ShellState.forScreen(screen)
         property bool isHovered: hoverArea.containsMouse
+        property bool shown: true
+
+        readonly property bool isPopoutOpen: comps && comps.panels && comps.panels.popouts && comps.panels.popouts.hasCurrent && comps.panels.popouts.isTop
+
+        Timer {
+            id: hideTimer
+            interval: 3000
+            repeat: false
+            onTriggered: win.shown = false
+        }
+
+        function updateShownState(): void {
+            if (isHovered || isPopoutOpen) {
+                hideTimer.stop();
+                win.shown = true;
+            } else {
+                if (fullscreen) {
+                    win.shown = false;
+                } else {
+                    hideTimer.restart();
+                }
+            }
+        }
+
+        onIsHoveredChanged: updateShownState()
+        onIsPopoutOpenChanged: updateShownState()
+
+        onFullscreenChanged: {
+            if (fullscreen) {
+                hideTimer.stop();
+                if (!isHovered && !isPopoutOpen) {
+                    win.shown = false;
+                }
+            } else {
+                win.shown = true;
+                hideTimer.restart();
+            }
+        }
+
+        Component.onCompleted: {
+            if (fullscreen && !isHovered && !isPopoutOpen) {
+                win.shown = false;
+            } else {
+                hideTimer.restart();
+            }
+        }
 
         ShellState.ComponentRef {
             screen: win.screen
@@ -48,26 +94,58 @@ Variants {
             left: true
             right: true
         }
+        margins.top: win.shown ? 0 : -win.height + 2
+
+        Behavior on margins.top {
+            Anim {}
+        }
 
         implicitWidth: screen.width
         implicitHeight: barRow.implicitHeight + 1
 
         mask: Region {
-            Region { item: logoPill }
-            Region { item: wsPill }
-            Region { item: clockPill }
-            Region { item: statusPillWrapper }
-            Region { item: powerPill }
+            Region {
+                x: logoPill.x
+                y: logoPill.y + barRow.y
+                width: win.shown ? logoPill.width : 0
+                height: win.shown ? logoPill.height : 0
+            }
+            Region {
+                x: wsPill.x
+                y: wsPill.y + barRow.y
+                width: win.shown ? wsPill.width : 0
+                height: win.shown ? wsPill.height : 0
+            }
+            Region {
+                x: clockPill.x
+                y: clockPill.y
+                width: win.shown ? clockPill.width : 0
+                height: win.shown ? clockPill.height : 0
+            }
+            Region {
+                x: statusPillWrapper.x
+                y: statusPillWrapper.y + barRow.y
+                width: win.shown ? statusPillWrapper.width : 0
+                height: win.shown ? statusPillWrapper.height : 0
+            }
+            Region {
+                x: powerPill.x
+                y: powerPill.y + barRow.y
+                width: win.shown ? powerPill.width : 0
+                height: win.shown ? powerPill.height : 0
+            }
+            Region {
+                x: 0
+                y: win.height - 2
+                width: win.width
+                height: !win.shown ? 2 : 0
+            }
         }
 
         RowLayout {
             id: barRow
 
-            y: win.fullscreen ? -implicitHeight - 10 : 6
-
-            Behavior on y {
-                Anim {}
-            }
+            y: 6
 
             anchors.left: parent.left
             anchors.leftMargin: 0
@@ -231,11 +309,7 @@ Variants {
             id: clockPill
 
             anchors.horizontalCenter: parent.horizontalCenter
-            y: win.fullscreen ? -implicitHeight - 10 : 0
-
-            Behavior on y {
-                Anim {}
-            }
+            y: 0
 
             implicitWidth: clockLayout.implicitWidth + Tokens.padding.large
             implicitHeight: clockLayout.implicitHeight + Tokens.padding.small
