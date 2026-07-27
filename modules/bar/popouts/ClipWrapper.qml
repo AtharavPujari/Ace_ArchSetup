@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import qs.components
 import qs.modules.bar.popouts // Need to import this module so the Wrapper type is the same as others
+import qs.services
 
 Item {
     id: root
@@ -19,6 +20,9 @@ Item {
 
     implicitWidth: content.isTop ? content.implicitWidth : content.implicitWidth * (1 - offsetScale)
     implicitHeight: content.isTop ? content.implicitHeight * (1 - offsetScale) : content.implicitHeight
+
+    width: implicitWidth
+    height: implicitHeight
 
     x: {
         if (content.isDetached)

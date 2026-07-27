@@ -65,6 +65,9 @@ Item {
     implicitWidth: nonAnimWidth
     implicitHeight: nonAnimHeight
 
+    width: implicitWidth
+    height: implicitHeight
+
     focus: hasCurrent
     Keys.onEscapePressed: {
         // Forward escape to password popout if active, otherwise close

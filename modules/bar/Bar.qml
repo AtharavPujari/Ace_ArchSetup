@@ -48,6 +48,7 @@ ColumnLayout {
             const items = (ch.item as StatusIcons).items;
             const icon = items.childAt(items.width / 2, mapToItem(items, 0, y).y);
             if (icon) {
+                popouts.isTop = false;
                 popouts.currentName = icon.name;
                 popouts.currentCenter = Qt.binding(() => icon.mapToItem(root, 0, icon.implicitHeight / 2).y);
                 popouts.hasCurrent = true;
@@ -58,6 +59,7 @@ ColumnLayout {
                 const index = Math.floor(((y - top - tray.padding * 2 + tray.spacing) / tray.layout.implicitHeight) * tray.items.count);
                 const trayItem = tray.items.itemAt(index);
                 if (trayItem) {
+                    popouts.isTop = false;
                     popouts.currentName = `traymenu${index}`;
                     popouts.currentCenter = Qt.binding(() => trayItem.mapToItem(root, 0, trayItem.implicitHeight / 2).y);
                     popouts.hasCurrent = true;
@@ -69,6 +71,7 @@ ColumnLayout {
                 tray.expanded = true;
             }
         } else if (id === "activeWindow" && Config.bar.popouts.activeWindow && Config.bar.activeWindow.showOnHover) {
+            popouts.isTop = false;
             popouts.currentName = id.toLowerCase();
             popouts.currentCenter = (ch.item as Item).mapToItem(root, 0, (ch.item as Item).implicitHeight / 2).y ?? 0;
             popouts.hasCurrent = true;

@@ -18,7 +18,30 @@ Singleton {
     property bool wifiEnabled: true
     readonly property bool scanning: rescanProc.running
     readonly property list<AccessPoint> networks: []
-    readonly property AccessPoint active: networks.find(n => n.active) ?? null
+    readonly property var active: {
+        const found = networks.find(n => n.active) ?? null;
+        if (found) return found;
+
+        if (wirelessInterfaces && wirelessInterfaces.length > 0) {
+            const activeWireless = wirelessInterfaces.find(iface => isConnectedState(iface.state));
+            if (activeWireless && activeWireless.connection) {
+                const match = networks.find(n => n.ssid === activeWireless.connection) ?? null;
+                if (match) return match;
+
+                return apComp.createObject(root, {
+                    lastIpcObject: {
+                        active: true,
+                        signal: 100,
+                        frequency: 2400,
+                        ssid: activeWireless.connection,
+                        bssid: "",
+                        security: "WPA2"
+                    }
+                });
+            }
+        }
+        return null;
+    }
     property list<string> savedConnections: []
     property list<string> savedConnectionSsids: []
 
@@ -415,13 +438,7 @@ Singleton {
             immediateCheckTimer.start();
         }
 
-        if (password && password.length > 0 && hasBssid) {
-            const bssidUpper = bssid.toUpperCase();
-            createConnectionWithPassword(ssid, bssidUpper, password, callback);
-            return;
-        }
-
-        let cmd = [root.nmcliCommandDevice, root.nmcliCommandWifi, "connect", ssid];
+        let cmd = [root.nmcliCommandDevice, root.nmcliCommandWifi, "connect", hasBssid ? bssid : ssid];
         if (password && password.length > 0) {
             cmd.push(root.connectionParamPassword, password);
         }
