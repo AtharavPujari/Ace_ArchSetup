@@ -78,6 +78,9 @@ private:
     // /sys/class/drm card busy files, enumerated once at construction (the card
     // set is static at runtime) and reused by detection and the tick path.
     QStringList m_busyFiles;
+    QString m_intelActFreqFile;
+    QString m_intelMaxFreqFile;
+    QString m_intelMinFreqFile;
     bool m_detecting = false;
     bool m_nvidiaQuerying = false;
 };

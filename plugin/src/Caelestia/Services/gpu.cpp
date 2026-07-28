@@ -123,11 +123,43 @@ const std::array<NameSource, 3>& nameSources() {
 // Index of the NVIDIA source within nameSources(); its result also drives type.
 constexpr int kNvidiaSource = 0;
 
+void detectIntelFreqFiles(QString& act, QString& max, QString& min) {
+    static const QRegularExpression cardRe(QStringLiteral("^card\\d+$"));
+    QDirIterator it(QStringLiteral("/sys/class/drm"), QDir::Dirs | QDir::NoDotAndDotDot);
+    while (it.hasNext()) {
+        const QString path = it.next();
+        if (!cardRe.match(it.fileName()).hasMatch()) {
+            continue;
+        }
+        // Try paths with gt/gt0 first
+        QString actPath = path + QStringLiteral("/gt/gt0/rps_act_freq_mhz");
+        QString maxPath = path + QStringLiteral("/gt/gt0/rps_max_freq_mhz");
+        QString minPath = path + QStringLiteral("/gt/gt0/rps_min_freq_mhz");
+        if (QFile::exists(actPath) && QFile::exists(maxPath)) {
+            act = actPath;
+            max = maxPath;
+            min = QFile::exists(minPath) ? minPath : QString();
+            return;
+        }
+        // Try fallback paths without gt/gt0
+        actPath = path + QStringLiteral("/gt_act_freq_mhz");
+        maxPath = path + QStringLiteral("/gt_max_freq_mhz");
+        minPath = path + QStringLiteral("/gt_min_freq_mhz");
+        if (QFile::exists(actPath) && QFile::exists(maxPath)) {
+            act = actPath;
+            max = maxPath;
+            min = QFile::exists(minPath) ? minPath : QString();
+            return;
+        }
+    }
+}
+
 } // namespace
 
 Gpu::Gpu(QObject* parent)
     : TickingService(parent) {
     m_busyFiles = gpuBusyFiles();
+    detectIntelFreqFiles(m_intelActFreqFile, m_intelMaxFreqFile, m_intelMinFreqFile);
 
     auto* svc = caelestia::config::GlobalConfig::instance()->services();
     m_userType = parseType(svc->gpuType());
@@ -241,7 +273,7 @@ void Gpu::finishNameSource(int index, QString name) {
     // the user pins a type) so a later switch to Auto reads a correct value without
     // depending on its own re-probe, which is skipped while a probe is in flight.
     if (index == kNvidiaSource) {
-        setAutoType(!name.isEmpty() ? Nvidia : (m_busyFiles.isEmpty() ? None : Generic));
+        setAutoType(!name.isEmpty() ? Nvidia : ((m_busyFiles.isEmpty() && m_intelActFreqFile.isEmpty()) ? None : Generic));
     }
 
     if (!name.isEmpty()) {
@@ -282,6 +314,47 @@ void Gpu::runProcess(const QString& program, const QStringList& args, std::funct
 }
 
 void Gpu::readGenericUsage() {
+    if (!m_intelActFreqFile.isEmpty()) {
+        QFile actF(m_intelActFreqFile);
+        QFile maxF(m_intelMaxFreqFile);
+        if (actF.open(QIODevice::ReadOnly | QIODevice::Text) && maxF.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            bool okAct = false;
+            bool okMax = false;
+            const double act = actF.readAll().trimmed().toDouble(&okAct);
+            const double max = maxF.readAll().trimmed().toDouble(&okMax);
+            actF.close();
+            maxF.close();
+
+            if (okAct && okMax && max > 0.0) {
+                double min = 0.0;
+                if (!m_intelMinFreqFile.isEmpty()) {
+                    QFile minF(m_intelMinFreqFile);
+                    if (minF.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                        bool okMin = false;
+                        const double v = minF.readAll().trimmed().toDouble(&okMin);
+                        if (okMin) {
+                            min = v;
+                        }
+                        minF.close();
+                    }
+                }
+                double newPerc = 0.0;
+                if (act >= min && (max - min) > 0.0) {
+                    newPerc = (act - min) / (max - min);
+                }
+                // Clip just in case
+                if (newPerc < 0.0) newPerc = 0.0;
+                if (newPerc > 1.0) newPerc = 1.0;
+
+                if (std::abs(newPerc - m_percentage) > 0.0001) {
+                    m_percentage = newPerc;
+                    emit percentageChanged();
+                }
+                return;
+            }
+        }
+    }
+
     qreal sum = 0.0;
     int count = 0;
     for (const QString& path : std::as_const(m_busyFiles)) {
@@ -335,7 +408,10 @@ void Gpu::startNvidiaUsage() {
 }
 
 void Gpu::readGpuTemperature() {
-    const auto t = sensorslib::gpuPciAverageTemp();
+    auto t = sensorslib::gpuPciAverageTemp();
+    if (!t) {
+        t = sensorslib::cpuPackageTemp();
+    }
     const qreal newTemp = t.value_or(0.0);
     if (std::abs(newTemp - m_temperature) > 0.05) {
         m_temperature = newTemp;
