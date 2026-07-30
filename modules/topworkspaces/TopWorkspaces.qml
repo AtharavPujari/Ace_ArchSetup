@@ -103,7 +103,7 @@ Variants {
                                     return isCurrent ? activeLabel : isOccupied ? occupiedLabel : label;
                                 }
                                 font.family: Tokens.font.workspaces
-                                color: isCurrent ? Colours.palette.m3onPrimary : (isOccupied ? Colours.palette.m3onSurface : Colours.palette.m3outlineVariant)
+                                color: isCurrent ? Colours.palette.m3onPrimary : (isOccupied ? Colours.palette.m3onSurface : Qt.alpha(Colours.palette.m3outline, 0.4))
                             }
 
                             MouseArea {

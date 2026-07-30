@@ -265,7 +265,7 @@ Singleton {
         property color m3onSurfaceVariant: Theme.textSecondary
         property color m3inverseSurface: "#efdfe2"
         property color m3inverseOnSurface: "#372e30"
-        property color m3outline: Theme.outline
+        property color m3outline: Theme.textSecondary
         property color m3outlineVariant: Theme.outline
         property color m3shadow: Theme.shadow
         property color m3scrim: Theme.shadow

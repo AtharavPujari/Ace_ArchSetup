@@ -16,23 +16,27 @@ ButtonBase {
     horizontalPadding: Tokens.padding.medium
     verticalPadding: Tokens.padding.small
 
-    activeColour: type === TextButton.Filled ? Colours.palette.m3primary : Colours.palette.m3secondary
+    activeColour: type === ButtonBase.Filled ? Colours.palette.m3primary : Colours.palette.m3secondary
     inactiveColour: {
-        if (!isToggle && type === TextButton.Filled)
+        if (!isToggle && type === ButtonBase.Filled)
             return Colours.palette.m3primary;
-        return type === TextButton.Filled ? Colours.tPalette.m3surfaceContainer : Colours.palette.m3secondaryContainer;
+        return type === ButtonBase.Filled ? Colours.tPalette.m3surfaceContainer : Colours.palette.m3secondaryContainer;
     }
     activeOnColour: {
-        if (type === TextButton.Text)
+        if (Theme.isDark)
+            return Theme.textPrimary;
+        if (type === ButtonBase.Text)
             return Colours.palette.m3primary;
-        return type === TextButton.Filled ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondary;
+        return type === ButtonBase.Filled ? Colours.palette.m3onPrimary : Colours.palette.m3onSecondary;
     }
     inactiveOnColour: {
-        if (!isToggle && type === TextButton.Filled)
+        if (Theme.isDark)
+            return Theme.textPrimary;
+        if (!isToggle && type === ButtonBase.Filled)
             return Colours.palette.m3onPrimary;
-        if (type === TextButton.Text)
+        if (type === ButtonBase.Text)
             return Colours.palette.m3primary;
-        return type === TextButton.Filled ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer;
+        return type === ButtonBase.Filled ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer;
     }
 
     implicitWidth: row.implicitWidth + horizontalPadding * 2

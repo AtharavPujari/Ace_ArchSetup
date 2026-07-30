@@ -66,24 +66,24 @@ QtObject {
     readonly property color surfaceElevated: isDark ? "#171717" : getSystemMappedColor("surfaceElevated", Colours.showPreview)
     readonly property color surfaceCard: isDark ? "#202020" : getSystemMappedColor("surfaceCard", Colours.showPreview)
     readonly property color outline: isDark ? "#2A2A2A" : getSystemMappedColor("outline", Colours.showPreview)
-    readonly property color textPrimary: isDark ? "#F5F5F5" : getSystemMappedColor("textPrimary", Colours.showPreview)
-    readonly property color textSecondary: isDark ? "#B5B5B5" : getSystemMappedColor("textSecondary", Colours.showPreview)
-    readonly property color textDisabled: isDark ? "#6F6F6F" : getSystemMappedColor("textDisabled", Colours.showPreview)
+    readonly property color textPrimary: isDark ? "#FFFFFF" : getSystemMappedColor("textPrimary", Colours.showPreview)
+    readonly property color textSecondary: isDark ? "#E0E0E0" : getSystemMappedColor("textSecondary", Colours.showPreview)
+    readonly property color textDisabled: isDark ? "#A0A0A0" : getSystemMappedColor("textDisabled", Colours.showPreview)
     readonly property color shadow: isDark ? "rgba(0,0,0,0.3)" : getSystemMappedColor("shadow", Colours.showPreview)
 
     // Dynamic monochrome accents in dark mode, and system accents in light mode
-    readonly property color primary: isDark ? "#F5F5F5" : getSystemMappedColor("primary", Colours.showPreview)
+    readonly property color primary: isDark ? "#FFFFFF" : getSystemMappedColor("primary", Colours.showPreview)
     readonly property color onPrimary: isDark ? "#090909" : getSystemMappedColor("onPrimary", Colours.showPreview)
     readonly property color primaryContainer: isDark ? "#202020" : getSystemMappedColor("primaryContainer", Colours.showPreview)
-    readonly property color onPrimaryContainer: isDark ? "#F5F5F5" : getSystemMappedColor("onPrimaryContainer", Colours.showPreview)
+    readonly property color onPrimaryContainer: isDark ? "#FFFFFF" : getSystemMappedColor("onPrimaryContainer", Colours.showPreview)
 
-    readonly property color secondary: isDark ? "#B5B5B5" : getSystemMappedColor("secondary", Colours.showPreview)
+    readonly property color secondary: isDark ? "#E0E0E0" : getSystemMappedColor("secondary", Colours.showPreview)
     readonly property color onSecondary: isDark ? "#111111" : getSystemMappedColor("onSecondary", Colours.showPreview)
     readonly property color secondaryContainer: isDark ? "#171717" : getSystemMappedColor("secondaryContainer", Colours.showPreview)
-    readonly property color onSecondaryContainer: isDark ? "#F5F5F5" : getSystemMappedColor("onSecondaryContainer", Colours.showPreview)
+    readonly property color onSecondaryContainer: isDark ? "#FFFFFF" : getSystemMappedColor("onSecondaryContainer", Colours.showPreview)
 
-    readonly property color tertiary: isDark ? "#6F6F6F" : getSystemMappedColor("tertiary", Colours.showPreview)
+    readonly property color tertiary: isDark ? "#A0A0A0" : getSystemMappedColor("tertiary", Colours.showPreview)
     readonly property color onTertiary: isDark ? "#111111" : getSystemMappedColor("onTertiary", Colours.showPreview)
     readonly property color tertiaryContainer: isDark ? "#171717" : getSystemMappedColor("tertiaryContainer", Colours.showPreview)
-    readonly property color onTertiaryContainer: isDark ? "#B5B5B5" : getSystemMappedColor("onTertiaryContainer", Colours.showPreview)
+    readonly property color onTertiaryContainer: isDark ? "#E0E0E0" : getSystemMappedColor("onTertiaryContainer", Colours.showPreview)
 }
