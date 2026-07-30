@@ -22,6 +22,8 @@ Singleton {
     readonly property M3TPalette tPalette: M3TPalette {}
     readonly property M3Palette current: M3Palette {}
     readonly property M3Palette preview: M3Palette {}
+    property var rawCurrentColours: ({})
+    property var rawPreviewColours: ({})
     readonly property Transparency transparency: Transparency {}
     readonly property alias wallLuminance: analyser.luminance
 
@@ -63,15 +65,30 @@ Singleton {
         const colours = isPreview ? preview : current;
         const scheme = JSON.parse(data);
 
-        if (!isPreview) {
+        if (isPreview) {
+            rawPreviewColours = scheme.colours;
+            previewLight = scheme.mode === "light";
+        } else {
+            rawCurrentColours = scheme.colours;
             root.scheme = scheme.name;
             flavour = scheme.flavour;
             currentLight = scheme.mode === "light";
-        } else {
-            previewLight = scheme.mode === "light";
         }
 
+        const skipList = {
+            "background": true, "surface": true, "surfaceDim": true, "surfaceBright": true,
+            "surfaceContainerLowest": true, "surfaceContainerLow": true, "surfaceContainer": true,
+            "surfaceContainerHigh": true, "surfaceContainerHighest": true, "onBackground": true,
+            "onSurface": true, "onSurfaceVariant": true, "outline": true, "outlineVariant": true,
+            "shadow": true, "scrim": true, "surfaceTint": true,
+            "primary": true, "onPrimary": true, "primaryContainer": true, "onPrimaryContainer": true,
+            "secondary": true, "onSecondary": true, "secondaryContainer": true, "onSecondaryContainer": true,
+            "tertiary": true, "onTertiary": true, "tertiaryContainer": true, "onTertiaryContainer": true
+        };
+
         for (const [name, colour] of Object.entries(scheme.colours)) {
+            if (skipList[name]) continue;
+
             const propName = name.startsWith("term") ? name : `m3${name}`;
             if (colours.hasOwnProperty(propName))
                 colours[propName] = `#${colour}`;
@@ -233,39 +250,39 @@ Singleton {
         property color m3tertiary_paletteKeyColor: "#986e4c"
         property color m3neutral_paletteKeyColor: "#807477"
         property color m3neutral_variant_paletteKeyColor: "#837377"
-        property color m3background: "#191114"
-        property color m3onBackground: "#efdfe2"
-        property color m3surface: "#191114"
-        property color m3surfaceDim: "#191114"
-        property color m3surfaceBright: "#403739"
-        property color m3surfaceContainerLowest: "#130c0e"
-        property color m3surfaceContainerLow: "#22191c"
-        property color m3surfaceContainer: "#261d20"
-        property color m3surfaceContainerHigh: "#31282a"
-        property color m3surfaceContainerHighest: "#3c3235"
-        property color m3onSurface: "#efdfe2"
-        property color m3surfaceVariant: "#514347"
-        property color m3onSurfaceVariant: "#d5c2c6"
+        property color m3background: Theme.base
+        property color m3onBackground: Theme.textPrimary
+        property color m3surface: Theme.surface
+        property color m3surfaceDim: Theme.surface
+        property color m3surfaceBright: Theme.surfaceCard
+        property color m3surfaceContainerLowest: Theme.base
+        property color m3surfaceContainerLow: Theme.surfaceElevated
+        property color m3surfaceContainer: Theme.surfaceElevated
+        property color m3surfaceContainerHigh: Theme.surfaceCard
+        property color m3surfaceContainerHighest: Theme.surfaceCard
+        property color m3onSurface: Theme.textPrimary
+        property color m3surfaceVariant: Theme.surfaceCard
+        property color m3onSurfaceVariant: Theme.textSecondary
         property color m3inverseSurface: "#efdfe2"
         property color m3inverseOnSurface: "#372e30"
-        property color m3outline: "#9e8c91"
-        property color m3outlineVariant: "#514347"
-        property color m3shadow: "#000000"
-        property color m3scrim: "#000000"
-        property color m3surfaceTint: "#ffb0ca"
-        property color m3primary: "#ffb0ca"
-        property color m3onPrimary: "#541d34"
-        property color m3primaryContainer: "#6f334a"
-        property color m3onPrimaryContainer: "#ffd9e3"
+        property color m3outline: Theme.outline
+        property color m3outlineVariant: Theme.outline
+        property color m3shadow: Theme.shadow
+        property color m3scrim: Theme.shadow
+        property color m3surfaceTint: Theme.surfaceCard
+        property color m3primary: Theme.primary
+        property color m3onPrimary: Theme.onPrimary
+        property color m3primaryContainer: Theme.primaryContainer
+        property color m3onPrimaryContainer: Theme.onPrimaryContainer
         property color m3inversePrimary: "#8b4a62"
-        property color m3secondary: "#e2bdc7"
-        property color m3onSecondary: "#422932"
-        property color m3secondaryContainer: "#5a3f48"
-        property color m3onSecondaryContainer: "#ffd9e3"
-        property color m3tertiary: "#f0bc95"
-        property color m3onTertiary: "#48290c"
-        property color m3tertiaryContainer: "#b58763"
-        property color m3onTertiaryContainer: "#000000"
+        property color m3secondary: Theme.secondary
+        property color m3onSecondary: Theme.onSecondary
+        property color m3secondaryContainer: Theme.secondaryContainer
+        property color m3onSecondaryContainer: Theme.onSecondaryContainer
+        property color m3tertiary: Theme.tertiary
+        property color m3onTertiary: Theme.onTertiary
+        property color m3tertiaryContainer: Theme.tertiaryContainer
+        property color m3onTertiaryContainer: Theme.onTertiaryContainer
         property color m3error: "#ffb4ab"
         property color m3onError: "#690005"
         property color m3errorContainer: "#93000a"

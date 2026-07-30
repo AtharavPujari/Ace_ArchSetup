@@ -28,32 +28,32 @@ class AnimCurves : public ConfigObject {
 public:
     explicit AnimCurves(QObject* parent = nullptr)
         : ConfigObject(parent)
-        , m_emphasized({ 0.05, 0, 2.0 / 15.0, 0.06, 1.0 / 6.0, 0.4, 5.0 / 24.0, 0.82, 0.25, 1, 1, 1 })
-        , m_emphasizedAccel({ 0.3, 0, 0.8, 0.15, 1, 1 })
-        , m_emphasizedDecel({ 0.05, 0.7, 0.1, 1, 1, 1 })
-        , m_standard({ 0.2, 0, 0, 1, 1, 1 })
-        , m_standardAccel({ 0.3, 0, 1, 1, 1, 1 })
-        , m_standardDecel({ 0, 0, 0, 1, 1, 1 })
-        , m_expressiveFastSpatial({ 0.42, 1.67, 0.21, 0.9, 1, 1 })
-        , m_expressiveDefaultSpatial({ 0.38, 1.21, 0.22, 1, 1, 1 })
-        , m_expressiveSlowSpatial({ 0.39, 1.29, 0.35, 0.98, 1, 1 })
-        , m_expressiveFastEffects({ 0.31, 0.94, 0.34, 1, 1, 1 })
-        , m_expressiveDefaultEffects({ 0.34, 0.8, 0.34, 1, 1, 1 })
-        , m_expressiveSlowEffects({ 0.34, 0.88, 0.34, 1, 1, 1 }) {}
+        , m_emphasized({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_emphasizedAccel({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_emphasizedDecel({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_standard({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_standardAccel({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_standardDecel({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_expressiveFastSpatial({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_expressiveDefaultSpatial({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_expressiveSlowSpatial({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_expressiveFastEffects({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_expressiveDefaultEffects({ 0.215, 0.61, 0.355, 1.0, 1, 1 })
+        , m_expressiveSlowEffects({ 0.215, 0.61, 0.355, 1.0, 1, 1 }) {}
 };
 
 class RoundingTokens : public ConfigObject {
     Q_OBJECT
     QML_ANONYMOUS
 
-    CONFIG_PROPERTY(int, extraSmall, 4)
-    CONFIG_PROPERTY(int, small, 8)
+    CONFIG_PROPERTY(int, extraSmall, 12)
+    CONFIG_PROPERTY(int, small, 12)
     CONFIG_PROPERTY(int, medium, 12)
-    CONFIG_PROPERTY(int, large, 16)
-    CONFIG_PROPERTY(int, largeIncreased, 20)
-    CONFIG_PROPERTY(int, extraLarge, 28)
-    CONFIG_PROPERTY(int, extraLargeIncreased, 32)
-    CONFIG_PROPERTY(int, extraExtraLarge, 48)
+    CONFIG_PROPERTY(int, large, 12)
+    CONFIG_PROPERTY(int, largeIncreased, 12)
+    CONFIG_PROPERTY(int, extraLarge, 12)
+    CONFIG_PROPERTY(int, extraLargeIncreased, 12)
+    CONFIG_PROPERTY(int, extraExtraLarge, 12)
     CONFIG_PROPERTY(int, full, std::numeric_limits<int>::max())
 
 public:
@@ -117,16 +117,16 @@ class AnimDurationTokens : public ConfigObject {
     Q_OBJECT
     QML_ANONYMOUS
 
-    CONFIG_GLOBAL_PROPERTY(int, small, 200)
-    CONFIG_GLOBAL_PROPERTY(int, normal, 400)
-    CONFIG_GLOBAL_PROPERTY(int, large, 600)
-    CONFIG_GLOBAL_PROPERTY(int, extraLarge, 1000)
-    CONFIG_GLOBAL_PROPERTY(int, expressiveFastSpatial, 350)
-    CONFIG_GLOBAL_PROPERTY(int, expressiveDefaultSpatial, 500)
-    CONFIG_GLOBAL_PROPERTY(int, expressiveSlowSpatial, 650)
-    CONFIG_GLOBAL_PROPERTY(int, expressiveFastEffects, 150)
+    CONFIG_GLOBAL_PROPERTY(int, small, 120)
+    CONFIG_GLOBAL_PROPERTY(int, normal, 200)
+    CONFIG_GLOBAL_PROPERTY(int, large, 220)
+    CONFIG_GLOBAL_PROPERTY(int, extraLarge, 220)
+    CONFIG_GLOBAL_PROPERTY(int, expressiveFastSpatial, 200)
+    CONFIG_GLOBAL_PROPERTY(int, expressiveDefaultSpatial, 200)
+    CONFIG_GLOBAL_PROPERTY(int, expressiveSlowSpatial, 220)
+    CONFIG_GLOBAL_PROPERTY(int, expressiveFastEffects, 120)
     CONFIG_GLOBAL_PROPERTY(int, expressiveDefaultEffects, 200)
-    CONFIG_GLOBAL_PROPERTY(int, expressiveSlowEffects, 300)
+    CONFIG_GLOBAL_PROPERTY(int, expressiveSlowEffects, 220)
 
 public:
     explicit AnimDurationTokens(QObject* parent = nullptr)
