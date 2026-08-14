@@ -225,12 +225,9 @@ CustomMouseArea {
 
         // Show dashboard on hover
         const showDashboard = Config.dashboard.showOnHover && inTopPanel(panels.dashboard, x, y);
-
-        // Always update visibility based on hover if not in shortcut mode
         if (!dashboardShortcutActive) {
             screenState.dashboard = showDashboard;
         } else if (showDashboard) {
-            // If hovering over dashboard area while in shortcut mode, transition to hover control
             dashboardShortcutActive = false;
         }
 

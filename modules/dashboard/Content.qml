@@ -9,6 +9,8 @@ import Caelestia.Config
 import qs.components
 import qs.components.filedialog
 
+import qs.modules.sidebar as Sidebar
+
 Item {
     id: root
 
@@ -22,6 +24,12 @@ Item {
                 iconName: "dashboard",
                 text: qsTr("Dashboard"),
                 enabled: Config.dashboard.showDashboard
+            },
+            {
+                component: notificationsComponent,
+                iconName: "notifications",
+                text: qsTr("Notifications"),
+                enabled: true
             },
             {
                 component: mediaComponent,
@@ -158,6 +166,25 @@ Item {
                 Dash {
                     screenState: root.screenState
                     facePicker: root.facePicker
+                }
+            }
+
+            Component {
+                id: notificationsComponent
+
+                Item {
+                    id: notifItem
+
+                    implicitWidth: 854
+                    implicitHeight: Math.min(400, Math.max(240, notifDock.neededHeight))
+
+                    Sidebar.NotifDock {
+                        id: notifDock
+
+                        props: Sidebar.Props {}
+                        screenState: root.screenState
+                        anchors.fill: parent
+                    }
                 }
             }
 

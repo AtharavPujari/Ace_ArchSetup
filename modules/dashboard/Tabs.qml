@@ -176,6 +176,7 @@ Item {
 
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
+                elide: Text.ElideRight
 
                 text: tab.text
                 color: tab.current ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
