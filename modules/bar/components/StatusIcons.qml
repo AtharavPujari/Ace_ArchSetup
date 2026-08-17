@@ -7,6 +7,7 @@ import Quickshell.Bluetooth
 import Quickshell.Services.UPower
 import Caelestia.Config
 import qs.components
+import qs.components.controls
 import qs.services
 import qs.utils
 
@@ -171,20 +172,59 @@ StyledRect {
             name: "battery"
             active: Config.bar.status.showBattery
 
-            sourceComponent: MaterialIcon {
-                animate: true
-                text: {
-                    if (!UPower.displayDevice.isLaptopBattery) {
+            sourceComponent: Item {
+                id: batteryIndicator
+
+                readonly property bool isLaptop: UPower.displayDevice.isLaptopBattery
+                readonly property real percentage: isLaptop ? UPower.displayDevice.percentage : 1.0
+                readonly property bool isCharging: [UPowerDeviceState.Charging, UPowerDeviceState.FullyCharged, UPowerDeviceState.PendingCharge].includes(UPower.displayDevice.state)
+                readonly property bool isLow: UPower.onBattery && percentage <= 0.2
+
+                readonly property color accentColor: isLow ? Colours.palette.m3error : root.colour
+                readonly property real iconSize: Tokens.font.icon.small.pointSize
+
+                property real animValue: percentage
+                Behavior on animValue {
+                    Anim {
+                        duration: 250
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                implicitWidth: iconSize
+                implicitHeight: iconSize
+
+                // Fallback for non-laptop battery (desktop systems without battery)
+                MaterialIcon {
+                    visible: !batteryIndicator.isLaptop
+                    anchors.centerIn: parent
+                    animate: true
+                    text: {
                         if (PowerProfiles.profile === PowerProfile.PowerSaver)
                             return "energy_savings_leaf";
                         if (PowerProfiles.profile === PowerProfile.Performance)
                             return "rocket_launch";
                         return "balance";
                     }
-                    return Icons.getBatteryIcon(UPower.displayDevice.percentage, [UPowerDeviceState.Charging, UPowerDeviceState.FullyCharged, UPowerDeviceState.PendingCharge].includes(UPower.displayDevice.state));
+                    color: root.colour
+                    fill: 1
                 }
-                color: !UPower.onBattery || UPower.displayDevice.percentage > 0.2 ? root.colour : Colours.palette.m3error
-                fill: 1
+
+                // Circular battery ring for laptop battery
+                Item {
+                    visible: batteryIndicator.isLaptop
+                    anchors.fill: parent
+
+                    CircularProgress {
+                        anchors.fill: parent
+                        value: batteryIndicator.animValue
+                        strokeWidth: 2
+                        fgColour: batteryIndicator.accentColor
+                        bgColour: Qt.rgba(batteryIndicator.accentColor.r, batteryIndicator.accentColor.g, batteryIndicator.accentColor.b, 0.2)
+                        spacing: 0
+                        hasEndIndicator: false
+                    }
+                }
             }
         }
     }
