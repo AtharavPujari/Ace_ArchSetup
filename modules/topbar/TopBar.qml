@@ -24,8 +24,10 @@ Variants {
         property bool isHovered: hoverArea.containsMouse
         property bool shown: true
 
+        readonly property alias clockPill: clockPill
         readonly property real statusPillCenterX: statusPillWrapper.mapToItem(null, statusPillWrapper.width / 2, 0).x
         readonly property real clockPillCenterX: clockPill.mapToItem(null, clockPill.width / 2, 0).x
+        readonly property real clockPillBottomY: clockPill.mapToItem(null, 0, clockPill.height).y
         property real activeTriggerCenterX: statusPillCenterX
 
         readonly property bool isPopoutOpen: comps && comps.panels && comps.panels.popouts && comps.panels.popouts.hasCurrent && comps.panels.popouts.isTop

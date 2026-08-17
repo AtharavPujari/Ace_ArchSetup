@@ -33,6 +33,7 @@ Item {
     readonly property alias utilities: utilities
     readonly property alias toasts: toasts
     readonly property alias sidebar: sidebar
+    readonly property alias latestNotifPreview: latestNotifPreview
 
     anchors.fill: parent
     anchors.margins: borderThickness
@@ -72,6 +73,12 @@ Item {
 
         anchors.top: parent.top
         anchors.right: parent.right
+    }
+
+    Notifications.LatestNotificationPopup {
+        id: latestNotifPreview
+
+        screenState: root.screenState
     }
 
     Item {

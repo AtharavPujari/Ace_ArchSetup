@@ -21,6 +21,8 @@ Singleton {
 
     property bool loaded
 
+    signal newNotification(var notif)
+
     function hasFullscreen(): bool {
         for (const monitor of Hypr.monitors.values) {
             if (monitor?.activeWorkspace?.toplevels.values.some(t => t.lastIpcObject.fullscreen > 1))
@@ -99,6 +101,7 @@ Singleton {
                 notification: notif
             });
             root.list = [comp, ...root.list];
+            root.newNotification(comp);
         }
     }
 
