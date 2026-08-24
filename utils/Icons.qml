@@ -106,6 +106,76 @@ Singleton {
         return Quickshell.iconPath(icon);
     }
 
+    function resolveNotifIcon(notif: var): string {
+        if (!notif)
+            return "";
+
+        const tryPath = function(name) {
+            if (!name || typeof name !== "string" || name.length === 0)
+                return "";
+            const path = Quickshell.iconPath(name);
+            return path ? path : "";
+        };
+
+        const tryHeuristic = function(name) {
+            if (!name || typeof name !== "string" || name.length === 0)
+                return "";
+            const icon = DesktopEntries.heuristicLookup(name)?.icon;
+            return tryPath(icon);
+        };
+
+        let res = "";
+
+        // 1. Explicit appIcon provided by notification
+        const appIcon = notif.appIcon ?? "";
+        if (appIcon.length > 0) {
+            res = tryPath(appIcon);
+            if (res) return res;
+
+            res = tryPath(appIcon.replace(/\.desktop$/, ""));
+            if (res) return res;
+
+            res = tryHeuristic(appIcon);
+            if (res) return res;
+        }
+
+        // 2. desktop-entry hint from DBus notification hints
+        const hints = notif.hints;
+        const desktopEntry = hints ? (hints["desktop-entry"] ?? hints["desktop_entry"] ?? hints.desktopEntry ?? "") : "";
+        if (typeof desktopEntry === "string" && desktopEntry.length > 0) {
+            res = tryPath(desktopEntry);
+            if (res) return res;
+
+            res = tryPath(desktopEntry.replace(/\.desktop$/, ""));
+            if (res) return res;
+
+            res = tryHeuristic(desktopEntry);
+            if (res) return res;
+        }
+
+        // 3. Application Name heuristic
+        const appName = notif.appName ?? "";
+        if (appName.length > 0) {
+            res = tryHeuristic(appName);
+            if (res) return res;
+
+            res = tryPath(appName);
+            if (res) return res;
+
+            const lower = appName.toLowerCase();
+            res = tryPath(lower);
+            if (res) return res;
+
+            res = tryPath(lower.replace(/\s+/g, "-"));
+            if (res) return res;
+
+            res = tryPath(lower.replace(/\s+/g, ""));
+            if (res) return res;
+        }
+
+        return "";
+    }
+
     function getAppCategoryIcon(name: string, fallback: string): string {
         for (const iconConfig of GlobalConfig.bar.workspaces.windowIcons)
             if (matchIconConfig(name, iconConfig))

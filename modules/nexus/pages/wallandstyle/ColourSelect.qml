@@ -1,47 +1,69 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
 import qs.components
+import qs.components.controls
 import qs.services
 import qs.modules.nexus.common
 
 PageBase {
     id: root
 
-    title: qsTr("Colours")
+    readonly property list<MenuItem> variantItems: [
+        MenuItem { text: qsTr("Tonal Spot") },
+        MenuItem { text: qsTr("Vibrant") },
+        MenuItem { text: qsTr("Expressive") },
+        MenuItem { text: qsTr("Neutral") },
+        MenuItem { text: qsTr("Monochrome") },
+        MenuItem { text: qsTr("Fruit Salad") },
+        MenuItem { text: qsTr("Rainbow") }
+    ]
+    readonly property list<string> variantValues: ["tonalSpot", "vibrant", "expressive", "neutral", "monochrome", "fruitSalad", "rainbow"]
+
+    title: qsTr("Colour palette & style")
     isSubPage: true
 
-    Item {
+    ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
-        implicitHeight: {
-            const f = parent.parent as Flickable;
-            return f.height - f.topMargin - f.bottomMargin;
+        anchors.top: parent.top
+        width: root.cappedWidth
+        spacing: Tokens.spacing.extraSmall / 2
+
+        SectionHeader {
+            first: true
+            text: qsTr("Theme Mode")
         }
 
-        ColumnLayout {
-            anchors.centerIn: parent
-            spacing: Tokens.padding.extraSmall
+        ToggleRow {
+            first: true
+            text: qsTr("Dark theme")
+            subtext: qsTr("Use dark mode palette across Caelestia shell")
+            checked: !Colours.light
+            onToggled: Colours.setMode(checked ? "dark" : "light")
+        }
 
-            MaterialIcon {
-                Layout.alignment: Qt.AlignHCenter
-                text: "handyman"
-                color: Colours.palette.m3outlineVariant
-                fontStyle: Tokens.font.icon.extraLarge
-            }
+        ToggleRow {
+            last: true
+            text: qsTr("Smart scheme")
+            subtext: qsTr("Automatically derive colors from active desktop wallpaper")
+            checked: GlobalConfig.services.smartScheme
+            onToggled: GlobalConfig.services.smartScheme = checked
+        }
 
-            StyledText {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Page under construction")
-                color: Colours.palette.m3outlineVariant
-                font: Tokens.font.title.large
-            }
+        SectionHeader {
+            text: qsTr("Material 3 Variant")
+        }
 
-            StyledText {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("This page will be available in a future update.")
-                color: Colours.palette.m3outlineVariant
-                font: Tokens.font.body.large
-            }
+        SelectRow {
+            first: true
+            last: true
+            label: qsTr("Color palette variant")
+            subtext: qsTr("Style generator for Material Design 3 theme colors")
+            menuItems: root.variantItems
+            active: root.variantItems[Math.max(0, root.variantValues.indexOf(GlobalConfig.appearance.variant))]
+            onSelected: item => GlobalConfig.appearance.variant = root.variantValues[root.variantItems.indexOf(item)]
         }
     }
 }

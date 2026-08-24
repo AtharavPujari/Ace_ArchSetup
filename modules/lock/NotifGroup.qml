@@ -25,8 +25,8 @@ StyledRect {
         for (const n of notifs) {
             if (!img && n.image.length > 0)
                 img = n.image;
-            if (!icon && n.appIcon.length > 0)
-                icon = n.appIcon;
+            if (!icon && (n.resolvedAppIcon?.length ?? 0) > 0)
+                icon = n.resolvedAppIcon;
             if (n.urgency === NotificationUrgency.Critical)
                 hasCritical = true;
             else if (n.urgency === NotificationUrgency.Normal)
@@ -89,7 +89,7 @@ StyledRect {
 
                 ColouredIcon {
                     implicitSize: Math.round(TokenConfig.sizes.notifs.image * 0.6)
-                    source: Quickshell.iconPath(root.appIcon)
+                    source: root.appIcon
                     colour: root.urgency === "critical" ? Colours.palette.m3onError : root.urgency === "low" ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                     layer.enabled: root.appIcon.endsWith("symbolic")
                 }
@@ -133,7 +133,7 @@ StyledRect {
                     ColouredIcon {
                         anchors.centerIn: parent
                         implicitSize: Math.round(Tokens.sizes.notifs.badge * 0.6)
-                        source: Quickshell.iconPath(root.appIcon)
+                        source: root.appIcon
                         colour: root.urgency === "critical" ? Colours.palette.m3onError : root.urgency === "low" ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                         layer.enabled: root.appIcon.endsWith("symbolic")
                     }

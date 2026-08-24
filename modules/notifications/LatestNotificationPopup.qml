@@ -133,18 +133,20 @@ Item {
                         height: 24
 
                         Loader {
-                            active: (root.notifData?.appIcon?.length ?? 0) > 0
-                            anchors.fill: parent
+                            active: (root.notifData?.resolvedAppIcon?.length ?? 0) > 0
+                            anchors.centerIn: parent
+                            width: 16
+                            height: 16
 
                             sourceComponent: ColouredIcon {
                                 anchors.fill: parent
-                                source: Quickshell.iconPath(root.notifData?.appIcon ?? "")
+                                source: root.notifData?.resolvedAppIcon ?? ""
                                 colour: Colours.palette.m3primary
                             }
                         }
 
                         Loader {
-                            active: (root.notifData?.appIcon?.length ?? 0) === 0
+                            active: (root.notifData?.resolvedAppIcon?.length ?? 0) === 0
                             anchors.fill: parent
 
                             sourceComponent: MaterialIcon {

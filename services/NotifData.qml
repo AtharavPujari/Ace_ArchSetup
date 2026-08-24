@@ -33,6 +33,7 @@ QtObject {
     property string appName
     property string image
     property var hints // Hints are not persisted across restarts
+    readonly property string resolvedAppIcon: Icons.resolveNotifIcon(this)
     property real expireTimeout: GlobalConfig.notifs.defaultExpireTimeout
     property int urgency: NotificationUrgency.Normal
     property bool resident

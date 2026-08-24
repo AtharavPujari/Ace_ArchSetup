@@ -20,12 +20,11 @@ QtObject {
     id: root
 
     readonly property list<Component> pageComps: [
-        // Appearance
+        // 1. Appearance
         Component {
-            // Wallpaper & style
             StackPage {
                 Component {
-                    WallpaperAndStyle {}
+                    AppearancePage {}
                 }
                 Component {
                     WallpaperSelect {}
@@ -36,67 +35,17 @@ QtObject {
                 Component {
                     ColourSelect {}
                 }
-            }
-        },
-
-        // Connectivity
-        Component {
-            // Network
-            StackPage {
                 Component {
-                    NetworkPage {}
-                }
-                Component {
-                    EthernetDetailPage {}
-                }
-                Component {
-                    AddNetworkPage {}
-                }
-                Component {
-                    NetworkDetailPage {}
-                }
-            }
-        },
-        Component {
-            // Bluetooth
-            StackPage {
-                Component {
-                    BluetoothPage {}
-                }
-                Component {
-                    BtDeviceInfo {}
-                }
-                Component {
-                    BluetoothPairing {}
-                }
-            }
-        },
-        Component {
-            // Audio
-            StackPage {
-                Component {
-                    AudioPage {}
-                }
-                Component {
-                    AppVolumes {}
+                    WallpaperAndStyle {}
                 }
             }
         },
 
-        // System
+        // 2. Shell
         Component {
-            PlaceholderComp {}
-        },
-        Component {
-            PlaceholderComp {}
-        },
-
-        // Shell
-        Component {
-            // Panels
             StackPage {
                 Component {
-                    PanelsPage {}
+                    ShellPage {}
                 }
                 Component {
                     DashboardPanel {}
@@ -127,11 +76,63 @@ QtObject {
                 Component {
                     BarClock {}
                 }
+                Component {
+                    PanelsPage {}
+                }
             }
         },
+
+        // 3. Notifications
         Component {
-            // Apps
             StackPage {
+                Component {
+                    NotificationsPage {}
+                }
+            }
+        },
+
+        // 4. Devices
+        Component {
+            StackPage {
+                Component {
+                    DevicesPage {}
+                }
+                Component {
+                    AudioPage {}
+                }
+                Component {
+                    BluetoothPage {}
+                }
+                Component {
+                    NetworkPage {}
+                }
+                Component {
+                    AppVolumes {}
+                }
+                Component {
+                    BtDeviceInfo {}
+                }
+                Component {
+                    BluetoothPairing {}
+                }
+                Component {
+                    EthernetDetailPage {}
+                }
+                Component {
+                    AddNetworkPage {}
+                }
+                Component {
+                    NetworkDetailPage {}
+                }
+            }
+        },
+
+        // 5. System
+        Component {
+            StackPage {
+                Component {
+                    SystemPage {}
+                }
                 Component {
                     AppsPage {}
                 }
@@ -141,29 +142,13 @@ QtObject {
                 Component {
                     AppInfo {}
                 }
-            }
-        },
-        Component {
-            // Services
-            StackPage {
-                Component {
-                    ServicesPage {}
-                }
-                Component {
-                    NotificationsPage {}
-                }
-            }
-        },
-        Component {
-            // Language & region
-            StackPage {
                 Component {
                     LanguageAndRegion {}
                 }
             }
         },
 
-        // About
+        // 6. About (Secondary bottom item)
         Component {
             StackPage {
                 Component {
