@@ -2,6 +2,8 @@
 import os
 import time
 import json
+import socket
+import threading
 import subprocess
 
 def get_cursor_pos():
@@ -31,7 +33,7 @@ def get_active_window():
 def pack_workspaces():
     """
     Shifts windows on higher workspaces down to fill any empty workspace gaps,
-    ensuring workspaces are strictly contiguous (1, 2, 3...) with no empty gaps.
+    ensuring workspaces are strictly contiguous (1, 2, 3...) starting from 1 with no empty gaps.
     """
     try:
         res = subprocess.check_output(["hyprctl", "clients", "-j"], text=True)
@@ -44,6 +46,9 @@ def pack_workspaces():
                 if ws_id not in ws_map:
                     ws_map[ws_id] = []
                 ws_map[ws_id].append(c)
+
+        if not ws_map:
+            return
 
         sorted_ws_ids = sorted(ws_map.keys())
         has_gap = any(actual != idx for idx, actual in enumerate(sorted_ws_ids, start=1))
@@ -77,22 +82,57 @@ def move_window(addr, target_ws):
         subprocess.run(["hyprctl", "dispatch", cmd], check=False)
         time.sleep(0.05)
         pack_workspaces()
-    except Exception as e:
+    except Exception:
         pass
 
+def socket_listener():
+    """
+    Listens to Hyprland IPC socket2 events in real time.
+    When windows close, open, or move, instantly packs workspaces.
+    """
+    while True:
+        try:
+            sig = os.environ.get("HYPRLAND_INSTANCE_SIGNATURE")
+            xdg = os.environ.get("XDG_RUNTIME_DIR")
+            if not sig or not xdg:
+                time.sleep(2)
+                continue
+            sock_path = f"{xdg}/hypr/{sig}/.socket2.sock"
+
+            s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            s.connect(sock_path)
+            buffer = ""
+            while True:
+                data = s.recv(4096)
+                if not data:
+                    break
+                buffer += data.decode("utf-8", errors="ignore")
+                while "\n" in buffer:
+                    line, buffer = buffer.split("\n", 1)
+                    line = line.strip()
+                    if line:
+                        event = line.split(">>")[0]
+                        if event in ("closewindow", "openwindow", "movewindow", "destroywindow"):
+                            time.sleep(0.02)
+                            pack_workspaces()
+            s.close()
+        except Exception:
+            time.sleep(1)
+
 def main():
+    # Initial packing on daemon start
+    pack_workspaces()
+
+    # Start IPC socket listener thread
+    t = threading.Thread(target=socket_listener, daemon=True)
+    t.start()
+
     cooldown = 0
-    pack_timer = 0
     flag_file = "/tmp/hypr_super_active"
 
     while True:
         time.sleep(0.08)
         now = time.time()
-
-        # Periodic workspace auto-packing to eliminate empty gaps
-        if now > pack_timer:
-            pack_workspaces()
-            pack_timer = now + 1.5
 
         # Require Super key to be active for edge window dragging
         if not os.path.exists(flag_file):
