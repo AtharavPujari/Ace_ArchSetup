@@ -28,25 +28,76 @@ def get_active_window():
         pass
     return None
 
+def pack_workspaces():
+    """
+    Shifts windows on higher workspaces down to fill any empty workspace gaps,
+    ensuring workspaces are strictly contiguous (1, 2, 3...) with no empty gaps.
+    """
+    try:
+        res = subprocess.check_output(["hyprctl", "clients", "-j"], text=True)
+        clients = json.loads(res)
+        ws_map = {}
+        for c in clients:
+            ws = c.get("workspace", {})
+            ws_id = ws.get("id")
+            if ws_id and ws_id > 0:
+                if ws_id not in ws_map:
+                    ws_map[ws_id] = []
+                ws_map[ws_id].append(c)
+
+        sorted_ws_ids = sorted(ws_map.keys())
+        has_gap = any(actual != idx for idx, actual in enumerate(sorted_ws_ids, start=1))
+
+        if has_gap:
+            active_win = get_active_window()
+            active_addr = active_win.get("address") if active_win else None
+
+            for idx, actual_ws_id in enumerate(sorted_ws_ids, start=1):
+                if actual_ws_id != idx:
+                    for win in ws_map[actual_ws_id]:
+                        addr = win.get("address")
+                        if addr:
+                            addr_str = addr if addr.startswith("0x") else f"0x{addr}"
+                            cmd = f'hl.dsp.window.move({{ window = "address:{addr_str}", workspace = "{idx}", follow = false }})'
+                            subprocess.run(["hyprctl", "dispatch", cmd], check=False)
+
+            if active_addr:
+                curr_active = get_active_window()
+                if curr_active and curr_active.get("workspace"):
+                    ws_target = curr_active["workspace"].get("id")
+                    if ws_target:
+                        subprocess.run(["hyprctl", "dispatch", f"hl.dsp.focus({{ workspace = {ws_target} }})"], check=False)
+    except Exception:
+        pass
+
 def move_window(addr, target_ws):
     addr_str = addr if addr.startswith("0x") else f"0x{addr}"
     cmd = f'hl.dsp.window.move({{ window = "address:{addr_str}", workspace = "{target_ws}", follow = true }})'
     try:
         subprocess.run(["hyprctl", "dispatch", cmd], check=False)
+        time.sleep(0.05)
+        pack_workspaces()
     except Exception as e:
         pass
 
 def main():
     cooldown = 0
+    pack_timer = 0
     flag_file = "/tmp/hypr_super_active"
+
     while True:
         time.sleep(0.08)
+        now = time.time()
 
-        # Require Super key to be active
+        # Periodic workspace auto-packing to eliminate empty gaps
+        if now > pack_timer:
+            pack_workspaces()
+            pack_timer = now + 1.5
+
+        # Require Super key to be active for edge window dragging
         if not os.path.exists(flag_file):
             continue
 
-        now = time.time()
         if now < cooldown:
             continue
 
