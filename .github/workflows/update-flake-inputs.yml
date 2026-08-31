@@ -2,24 +2,17 @@ name: Update flake inputs
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * 0"
 
 jobs:
   update-flake:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Generate app token
-        id: app-token
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ secrets.CLIENT_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
       - uses: actions/checkout@v6
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Nix
         uses: nixbuild/nix-quick-install-action@v34
@@ -86,7 +79,7 @@ jobs:
         if: steps.check.outputs.modified == 'true'
         uses: EndBug/add-and-commit@v10
         with:
-          github_token: ${{ steps.app-token.outputs.token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           add: flake.lock
           default_author: github_actions
           message: "[CI] chore: update flake"
