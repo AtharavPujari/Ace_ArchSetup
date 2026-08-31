@@ -4,6 +4,15 @@ local fn   = require("hyprland.functions")
 -- Launcher
 hl.bind("SUPER + SUPER_L", hl.dsp.global("caelestia:launcher"), { release = true })
 
+-- Track Super key state for edge drag window movement
+hl.bind("SUPER_L", function()
+    hl.exec_cmd("touch /tmp/hypr_super_active")
+end, { locked = true, non_consuming = true, ignore_mods = true })
+
+hl.bind("SUPER_L", function()
+    hl.exec_cmd("rm -f /tmp/hypr_super_active")
+end, { locked = true, non_consuming = true, ignore_mods = true, release = true })
+
 -- Misc
 hl.bind(vars.kbSession, hl.dsp.global("caelestia:session"))
 hl.bind(vars.kbShowSidebar, hl.dsp.global("caelestia:sidebar"))

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import time
 import json
 import subprocess
@@ -37,8 +38,14 @@ def move_window(addr, target_ws):
 
 def main():
     cooldown = 0
+    flag_file = "/tmp/hypr_super_active"
     while True:
         time.sleep(0.08)
+
+        # Require Super key to be active
+        if not os.path.exists(flag_file):
+            continue
+
         now = time.time()
         if now < cooldown:
             continue
