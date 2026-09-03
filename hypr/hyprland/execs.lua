@@ -25,9 +25,6 @@ hl.on("hyprland.start", function()
     -- Forward bluetooth media commands to MPRIS
     hl.exec_cmd("mpris-proxy")
 
-    -- Edge drag workspace switcher
-    hl.exec_cmd("python3 ~/.config/hypr/scripts/edge_drag.py")
-
     -- Start shell
     hl.exec_cmd("caelestia shell -d")
 end)
