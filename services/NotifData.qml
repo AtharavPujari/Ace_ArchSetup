@@ -110,17 +110,36 @@ QtObject {
         }
     }
 
+    function cleanSummary(rawSummary: string, rawBody: string): string {
+        if (!rawSummary) return rawBody ? rawBody.split("\n")[0] : "Notification";
+        const s = rawSummary.trim();
+        if (/^jetski$/i.test(s)) {
+            if (rawBody && rawBody.trim()) {
+                const firstLine = rawBody.trim().split("\n")[0];
+                return firstLine.replace(/^jetski[:\s\-]*/i, "").trim();
+            }
+            return "Antigravity Notification";
+        }
+        return s.replace(/^jetski[:\s\-]*/i, "").trim() || "Notification";
+    }
+
+    function cleanBody(rawSummary: string, rawBody: string): string {
+        if (!rawBody) return "";
+        let b = rawBody.trim();
+        return b.replace(/^jetski[:\s\-]*/i, "").trim();
+    }
+
     readonly property Connections conn: Connections {
         function onClosed(): void {
             notif.close();
         }
 
         function onSummaryChanged(): void {
-            notif.summary = notif.notification.summary;
+            notif.summary = notif.cleanSummary(notif.notification.summary, notif.notification.body);
         }
 
         function onBodyChanged(): void {
-            notif.body = notif.notification.body;
+            notif.body = notif.cleanBody(notif.notification.summary, notif.notification.body);
         }
 
         function onAppIconChanged(): void {
@@ -222,8 +241,8 @@ QtObject {
             return;
 
         notificationId = notification.id;
-        summary = notification.summary;
-        body = notification.body;
+        summary = cleanSummary(notification.summary, notification.body);
+        body = cleanBody(notification.summary, notification.body);
         appIcon = notification.appIcon;
         appName = notification.appName;
         image = notification.image;
