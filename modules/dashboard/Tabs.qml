@@ -125,10 +125,20 @@ Item {
             id: mouse
 
             function onWheel(event: WheelEvent): void {
-                if (event.angleDelta.y < 0)
-                    root.screenState.dashboardTab = Math.min(root.screenState.dashboardTab + 1, bar.count - 1);
-                else if (event.angleDelta.y > 0)
-                    root.screenState.dashboardTab = Math.max(root.screenState.dashboardTab - 1, 0);
+                const dx = event.angleDelta.x;
+                const dy = event.angleDelta.y;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    if (dx < 0)
+                        root.screenState.dashboardTab = Math.min(root.screenState.dashboardTab + 1, bar.count - 1);
+                    else if (dx > 0)
+                        root.screenState.dashboardTab = Math.max(root.screenState.dashboardTab - 1, 0);
+                } else {
+                    if (dy < 0)
+                        root.screenState.dashboardTab = Math.min(root.screenState.dashboardTab + 1, bar.count - 1);
+                    else if (dy > 0)
+                        root.screenState.dashboardTab = Math.max(root.screenState.dashboardTab - 1, 0);
+                }
             }
 
             implicitWidth: Math.max(icon.width, label.width)
@@ -137,6 +147,7 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
 
+            onEntered: root.screenState.dashboardTab = tab.TabBar.index
             onPressed: root.screenState.dashboardTab = tab.TabBar.index
 
             StateLayer {
@@ -150,6 +161,7 @@ Item {
 
                 radius: Tokens.rounding.medium
                 color: tab.current ? Colours.palette.m3primary : Colours.palette.m3onSurface
+                onEntered: root.screenState.dashboardTab = tab.TabBar.index
                 onClicked: root.screenState.dashboardTab = tab.TabBar.index
             }
 

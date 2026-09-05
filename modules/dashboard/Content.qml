@@ -20,12 +20,6 @@ Item {
     readonly property var dashboardTabs: {
         const allTabs = [
             {
-                component: dashComponent,
-                iconName: "dashboard",
-                text: qsTr("Dashboard"),
-                enabled: Config.dashboard.showDashboard
-            },
-            {
                 component: notificationsComponent,
                 iconName: "notifications",
                 text: qsTr("Notifications"),
@@ -36,6 +30,12 @@ Item {
                 iconName: "queue_music",
                 text: qsTr("Media"),
                 enabled: Config.dashboard.showMedia
+            },
+            {
+                component: dashComponent,
+                iconName: "dashboard",
+                text: qsTr("Dashboard"),
+                enabled: Config.dashboard.showDashboard
             },
             {
                 component: performanceComponent,

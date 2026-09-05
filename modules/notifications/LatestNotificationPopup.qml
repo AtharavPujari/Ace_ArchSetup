@@ -107,7 +107,7 @@ Item {
 
             onClicked: {
                 root.shown = false;
-                const notifIndex = Config.dashboard.showDashboard ? 1 : 0;
+                const notifIndex = 0;
                 root.screenState.dashboardTab = notifIndex;
                 root.screenState.dashboard = true;
             }
